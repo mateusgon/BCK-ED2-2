@@ -107,16 +107,18 @@ public class ArvoreSplay implements Cloneable {
     }
 
     private NoSplay puxarParaRaiz(NoSplay no, Integer idGasto) { // Função que irá puxar o nó com o identificador do gasto para a raiz, se existente. 
-        // Caso contrário, o nó anterior a ele será puxado para a raiz
+        // Caso contrário, o nó anterior (antecessor) a ele será puxado para a raiz
 
-        if (no == null) { // Nesse caso acontece de o valor já estar presente ou a raiz ser nula
+        if (no == null) { // Nesse caso acontece de a raiz ser nula
             return null;
         }
 
         /**
          * Os IFs abaixo verificam se foi encontrado o valor desejado realizando
          * as rotações, de forma recursiva até chegar a nós folha ou anteriores
-         * ao que deve ser buscado.
+         * ao que deve ser buscado. Se não for encontrado por meio das
+         * recursões, sabe-se que ele não está na árvore e o antecessor será
+         * colocado na raiz
          */
         if (idGasto < no.getIdGasto()) { // Nessa verificação foi possível observar que o identificador do Gasto pode estar a esquerda ou a direita de um nó. Entretanto, ainda não foi encontrado.
 
@@ -142,7 +144,7 @@ public class ArvoreSplay implements Cloneable {
                 return rotacaoDireita(no);
             }
 
-        } else if (idGasto > no.getIdGasto()) {
+        } else if (idGasto > no.getIdGasto()) { 
 
             if (no.getFilhoDireita() == null) { // Caso não possua filho a direita, sabe-se que não será possível encontrar o idGasto
                 return no;
@@ -176,24 +178,23 @@ public class ArvoreSplay implements Cloneable {
             return;
         }
 
-        raiz = puxarParaRaiz(raiz, idGasto); // Realiza 
+        raiz = puxarParaRaiz(raiz, idGasto); // Realiza a busca
 
-        if (Objects.equals(idGasto, raiz.getIdGasto())) {
-            if (raiz.getFilhoEsquerda() == null) {
+        if (Objects.equals(idGasto, raiz.getIdGasto())) { // Está na árvore
+            if (raiz.getFilhoEsquerda() == null) { // Não possui filho a esquerda, a raiz passa a ser o filho a direita
                 raiz = raiz.getFilhoDireita();
-            } else {
-                NoSplay noAux = raiz.getFilhoDireita();
+            } else if (raiz.getFilhoDireita() == null) { // Não possui filho a direita, a raiz passa a ser o filho a direita
                 raiz = raiz.getFilhoEsquerda();
-                puxarParaRaiz(noAux, idGasto);
-                raiz.setFilhoDireita(noAux);
-                resultado.setNumTrocas(resultado.getNumTrocas() + 1);
+            } else { // Não possui filhos, a árvore ficou vazia
+                raiz = null;
             }
         }
+        resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
     }
 
-    public Boolean procurar(Integer idGasto) {
+    public Boolean procurar(Integer idGasto) { // Assim como na remoção e na inserção, é utiliza a função puxarParaRaiz para tentar localizar o principal elemento
         raiz = puxarParaRaiz(raiz, idGasto);
-        if (Objects.equals(idGasto, raiz.getIdGasto())) {
+        if (Objects.equals(idGasto, raiz.getIdGasto())) { // Localizou
             resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
             return true;
         } else {
@@ -217,22 +218,24 @@ public class ArvoreSplay implements Cloneable {
         return noAux; // Retorna o noAux que virou a nova raiz das subárvores
     }
 
-    private void auxRotacaoZigZig(NoSplay no, Integer idGasto, Integer idZigZig) {
-        if (idZigZig == 1) {
+    private void auxRotacaoZigZig(NoSplay no, Integer idGasto, Integer idZigZig) { // Realiza a rotação Zig-Zig
+        if (idZigZig == 1) { // Nesse caso, o nó está a esquerda e irá virar a raiz da subárvore desejada
             NoSplay noAux = puxarParaRaiz(no.getFilhoEsquerda().getFilhoEsquerda(), idGasto);
             NoSplay noAux2 = no.getFilhoEsquerda();
             noAux2.setFilhoEsquerda(noAux);
             no = rotacaoDireita(no);
             return;
         }
-        if (idZigZig == 2) {
-            no.getFilhoDireita().setFilhoDireita(puxarParaRaiz(no.getFilhoDireita().getFilhoDireita(), idGasto));
+        if (idZigZig == 2) { // Neesse caso, o nó está a direita e irá virar a raiz da subárvore desejada
+            NoSplay noAux = puxarParaRaiz(no.getFilhoDireita().getFilhoDireita(), idGasto);
+            NoSplay noAux2 = no.getFilhoDireita();
+            noAux2.setFilhoDireita(noAux);
             no = rotacaoEsquerda(no);
             return;
         }
     }
 
-    private void auxRotacaoZigZag(NoSplay no, Integer idGasto, Integer idZigZag) {
+    private void auxRotacaoZigZag(NoSplay no, Integer idGasto, Integer idZigZag) { // Realiza a rotação Zig-Zag
         if (idZigZag == 1) {
             NoSplay noAux = puxarParaRaiz(no.getFilhoEsquerda().getFilhoDireita(), idGasto);
             NoSplay noAux2 = no.getFilhoEsquerda();
@@ -244,9 +247,12 @@ public class ArvoreSplay implements Cloneable {
             return;
         }
         if (idZigZag == 2) {
-            no.getFilhoDireita().setFilhoEsquerda(puxarParaRaiz(no.getFilhoDireita().getFilhoEsquerda(), idGasto));
+            NoSplay noAux = puxarParaRaiz(no.getFilhoDireita().getFilhoEsquerda(), idGasto);
+            NoSplay noAux2 = no.getFilhoDireita();
+            noAux2.setFilhoEsquerda(noAux);
             if (no.getFilhoDireita().getFilhoEsquerda() != null) {
-                no.setFilhoDireita(rotacaoDireita(no.getFilhoDireita()));
+                NoSplay noAux3 = rotacaoDireita(no.getFilhoDireita());
+                no.setFilhoDireita(noAux3);
             }
             return;
 
