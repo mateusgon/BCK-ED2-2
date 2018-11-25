@@ -1,4 +1,4 @@
-package arvores;
+package nos;
 
 import model.Gasto;
 

@@ -1,5 +1,6 @@
 package arvores;
 
+import nos.NoTrie;
 import java.util.ArrayList;
 import java.util.List;
 import model.Gasto;

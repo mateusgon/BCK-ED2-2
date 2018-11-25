@@ -1,6 +1,6 @@
 package action;
 
-import arvores.NoTrie;
+import nos.NoTrie;
 import arvores.Trie;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,21 +18,18 @@ public class PostInicialAction implements Action { // Responsável por processar
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> palavras = new ArrayList<>();
         String nome = request.getParameter("nome"); // Recebe o nome do elemento
-        GastoDAO.getInstance();
-        Trie arvore = new Trie(); // Instancia a Trie
-        for (Gasto gasto : GastoDAO.getInstance()) {
-            arvore.inserir(gasto); // Insere as palavras do Gasto.ReceiptDescription na Trie
-        }
-        NoTrie noAux2 = arvore.localizaPalavra(nome); // Verifica se localizou na Trie
+        Trie trie = GastoDAO.getInstanceTrie();
+        NoTrie noAux2 = trie.localizaPalavra(nome); // Verifica se localizou na Trie
         if (noAux2.geteFimDaString() && noAux2.getGasto().getReceipt_description().toUpperCase().equals(nome.toUpperCase())) { // Se sim, envia para a página de sucesso.
             String palavra = "Gasto encontrado " + nome + " e o valor gasto foi R$" + noAux2.getGasto().getReceipt_value();
             palavras.add(nome);
         } else { // Caso contrário, envia para auto Completar a palavra com dicas
-            arvore.autoComplete(noAux2);
-            if (arvore.getSugestoes().size() > 0) { // Existe sugestão
+            trie.autoComplete(noAux2);
+            if (trie.getSugestoes().size() > 0) { // Existe sugestão
+                palavras.add("Não encontrado");
                 palavras.add("Sugestões:");
-                for (Gasto sugestoe : arvore.getSugestoes()) {
-                    String palavra = "Gasto " + sugestoe.getReceipt_description() + " e o valor gasto foi R$" + sugestoe.getReceipt_value();
+                for (Gasto sugestoe : trie.getSugestoes()) {
+                    String palavra = "Gasto: " + sugestoe.getReceipt_description() + " e o valor gasto foi R$" + sugestoe.getReceipt_value();
                     palavras.add(palavra);
                 }
             } else { // Não existe sugestão

@@ -18,6 +18,7 @@ public class GetInicialAction implements Action { // Responsável por solicitar 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/inicial.jsp");
             dispatcher.forward(request, response);
         } else if (identificador == 2) { // Redireciona para a digitação do nome do tipo do gasto
+            GastoDAO.getInstanceTrie();
             request.setAttribute("pesquisado", false);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/inicial2.jsp");
             dispatcher.forward(request, response);

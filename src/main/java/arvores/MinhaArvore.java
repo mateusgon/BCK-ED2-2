@@ -1,5 +1,6 @@
 package arvores;
 
+import nos.NoMinhaArvore;
 import model.Gasto;
 import model.Resultado;
 

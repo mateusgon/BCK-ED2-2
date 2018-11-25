@@ -1,19 +1,27 @@
-package arvores;
+package nos;
 
 import model.Gasto;
 
-public class NoSplay {
+public class NoMinhaArvore {
 
+    private Integer altura;
     private Integer idGasto;
     private Gasto gasto;
-    private NoSplay filhoEsquerda;
-    private NoSplay filhoDireita;
+    private NoMinhaArvore filhoEsquerda;
+    private NoMinhaArvore filhoDireita;
 
-    public NoSplay(Integer idGasto, Gasto gasto) {
+    public NoMinhaArvore(Integer idGasto, Gasto gasto) {
         this.idGasto = idGasto;
         this.gasto = gasto;
-        this.filhoEsquerda = null;
-        this.filhoDireita = null;
+        this.altura = 1;
+    }
+
+    public Integer getAltura() {
+        return altura;
+    }
+
+    public void setAltura(Integer altura) {
+        this.altura = altura;
     }
 
     public Integer getIdGasto() {
@@ -24,19 +32,19 @@ public class NoSplay {
         this.idGasto = idGasto;
     }
 
-    public NoSplay getFilhoEsquerda() {
+    public NoMinhaArvore getFilhoEsquerda() {
         return filhoEsquerda;
     }
 
-    public void setFilhoEsquerda(NoSplay filhoEsquerda) {
+    public void setFilhoEsquerda(NoMinhaArvore filhoEsquerda) {
         this.filhoEsquerda = filhoEsquerda;
     }
 
-    public NoSplay getFilhoDireita() {
+    public NoMinhaArvore getFilhoDireita() {
         return filhoDireita;
     }
 
-    public void setFilhoDireita(NoSplay filhoDireita) {
+    public void setFilhoDireita(NoMinhaArvore filhoDireita) {
         this.filhoDireita = filhoDireita;
     }
 
@@ -47,6 +55,7 @@ public class NoSplay {
     public void setGasto(Gasto gasto) {
         this.gasto = gasto;
     }
-
+    
+    
 }
 

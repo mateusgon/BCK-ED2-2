@@ -1,4 +1,4 @@
-package arvores;
+package nos;
 
 import java.util.Collection;
 import java.util.LinkedList;

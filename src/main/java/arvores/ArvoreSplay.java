@@ -1,10 +1,11 @@
 package arvores;
 
+import nos.NoSplay;
 import java.util.Objects;
 import model.Gasto;
 import model.Resultado;
 
-public class ArvoreSplay implements Cloneable {
+public class ArvoreSplay {
 
     private Resultado resultado;
     private NoSplay raiz;
@@ -19,11 +20,6 @@ public class ArvoreSplay implements Cloneable {
 
     public void setRaiz(NoSplay raiz) {
         this.raiz = raiz;
-    }
-
-    @Override
-    public ArvoreSplay clone() throws CloneNotSupportedException {
-        return (ArvoreSplay) super.clone(); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void insereGastos(Gasto vetor[], Resultado resultado) { // Recebe os gastos que devem ser inseridos
@@ -63,6 +59,7 @@ public class ArvoreSplay implements Cloneable {
 
         NoSplay noAux = puxarParaRaiz(raiz, idGasto); // Verifica se o nó que deseja ser inserido já está presente, se tiver, ele é retornado pela função e na verificação abaixo, sabe-se que não precisa ser inserido. Se não, o núltimo nó folha é colocado na raiz.
         raiz = noAux;
+        resultado.setNumTrocas(resultado.getNumTrocas() + 1);
 
         /**
          * Nota: No caso anterior, poderia ter sido implementado pelo grupo um
@@ -121,7 +118,7 @@ public class ArvoreSplay implements Cloneable {
          * colocado na raiz
          */
         if (idGasto < no.getIdGasto()) { // Nessa verificação foi possível observar que o identificador do Gasto pode estar a esquerda ou a direita de um nó. Entretanto, ainda não foi encontrado.
-
+            resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
             if (no.getFilhoEsquerda() == null) { // Caso não possua filho a esquerda, sabe-se que não será possível encontrar o idGasto.
                 return no;
             }
@@ -144,8 +141,8 @@ public class ArvoreSplay implements Cloneable {
                 return rotacaoDireita(no);
             }
 
-        } else if (idGasto > no.getIdGasto()) { 
-
+        } else if (idGasto > no.getIdGasto()) {
+            resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
             if (no.getFilhoDireita() == null) { // Caso não possua filho a direita, sabe-se que não será possível encontrar o idGasto
                 return no;
             }
@@ -179,14 +176,18 @@ public class ArvoreSplay implements Cloneable {
         }
 
         raiz = puxarParaRaiz(raiz, idGasto); // Realiza a busca
+        resultado.setNumTrocas(resultado.getNumTrocas() + 1);
 
         if (Objects.equals(idGasto, raiz.getIdGasto())) { // Está na árvore
             if (raiz.getFilhoEsquerda() == null) { // Não possui filho a esquerda, a raiz passa a ser o filho a direita
                 raiz = raiz.getFilhoDireita();
+                resultado.setNumTrocas(resultado.getNumTrocas() + 1);
             } else if (raiz.getFilhoDireita() == null) { // Não possui filho a direita, a raiz passa a ser o filho a direita
                 raiz = raiz.getFilhoEsquerda();
+                resultado.setNumTrocas(resultado.getNumTrocas() + 1);
             } else { // Não possui filhos, a árvore ficou vazia
                 raiz = null;
+                resultado.setNumTrocas(resultado.getNumTrocas() + 1);
             }
         }
         resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
@@ -194,6 +195,7 @@ public class ArvoreSplay implements Cloneable {
 
     public Boolean procurar(Integer idGasto) { // Assim como na remoção e na inserção, é utiliza a função puxarParaRaiz para tentar localizar o principal elemento
         raiz = puxarParaRaiz(raiz, idGasto);
+        resultado.setNumTrocas(resultado.getNumTrocas() + 1);
         if (Objects.equals(idGasto, raiz.getIdGasto())) { // Localizou
             resultado.setNumComparacoes(resultado.getNumComparacoes() + 1);
             return true;
@@ -224,6 +226,7 @@ public class ArvoreSplay implements Cloneable {
             NoSplay noAux2 = no.getFilhoEsquerda();
             noAux2.setFilhoEsquerda(noAux);
             no = rotacaoDireita(no);
+            resultado.setNumTrocas(resultado.getNumTrocas() + 3);
             return;
         }
         if (idZigZig == 2) { // Neesse caso, o nó está a direita e irá virar a raiz da subárvore desejada
@@ -231,6 +234,7 @@ public class ArvoreSplay implements Cloneable {
             NoSplay noAux2 = no.getFilhoDireita();
             noAux2.setFilhoDireita(noAux);
             no = rotacaoEsquerda(no);
+            resultado.setNumTrocas(resultado.getNumTrocas() + 3);
             return;
         }
     }
@@ -243,7 +247,9 @@ public class ArvoreSplay implements Cloneable {
             if (no.getFilhoEsquerda().getFilhoDireita() != null) {
                 NoSplay noAux3 = rotacaoEsquerda(no.getFilhoEsquerda());
                 no.setFilhoEsquerda(noAux3);
+                resultado.setNumTrocas(resultado.getNumTrocas() + 2);
             }
+            resultado.setNumTrocas(resultado.getNumTrocas() + 3);
             return;
         }
         if (idZigZag == 2) {
@@ -253,7 +259,9 @@ public class ArvoreSplay implements Cloneable {
             if (no.getFilhoDireita().getFilhoEsquerda() != null) {
                 NoSplay noAux3 = rotacaoDireita(no.getFilhoDireita());
                 no.setFilhoDireita(noAux3);
+                resultado.setNumTrocas(resultado.getNumTrocas() + 2);
             }
+            resultado.setNumTrocas(resultado.getNumTrocas() + 3);
             return;
 
         }
