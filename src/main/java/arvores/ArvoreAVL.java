@@ -4,7 +4,7 @@ import nos.NoAVL;
 import model.Gasto;
 import model.Resultado;
 
-public class ArvoreAVL implements Cloneable {
+public class ArvoreAVL{
 
     private Resultado resultado;
     private NoAVL raiz;
@@ -27,11 +27,6 @@ public class ArvoreAVL implements Cloneable {
 
     public void setResultado(Resultado resultado) {
         this.resultado = resultado;
-    }
-
-    @Override
-    public ArvoreAVL clone() throws CloneNotSupportedException {
-        return (ArvoreAVL) super.clone(); // Função para clonar a árvore, realizando uma cópia.
     }
 
     public void insereGastos(Gasto vetor[], Resultado resultado) { // Recebe os gastos que devem ser inseridos

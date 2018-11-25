@@ -4,7 +4,7 @@ import nos.NoMinhaArvore;
 import model.Gasto;
 import model.Resultado;
 
-public class MinhaArvore implements Cloneable{
+public class MinhaArvore{
 
     private Resultado resultado;
     private NoMinhaArvore raiz;
@@ -27,11 +27,6 @@ public class MinhaArvore implements Cloneable{
 
     public void setResultado(Resultado resultado) {
         this.resultado = resultado;
-    }
-
-    @Override
-    public MinhaArvore clone() throws CloneNotSupportedException {
-        return (MinhaArvore) super.clone(); // Função para clonar a árvore, realizando uma cópia.
     }
 
     public void insereGastos(Gasto vetor[], Resultado resultado) { // Recebe os gastos que devem ser inseridos
